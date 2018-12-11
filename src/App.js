@@ -56,6 +56,10 @@ class App extends Component {
     this.setState({box: box});
   }
 
+      imageURL: ''
+    }
+  }
+
   onInputChange = (event) => {
     this.setState({input: event.target.value});
     }
@@ -68,6 +72,15 @@ class App extends Component {
       , this.state.input)
       .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
       .catch(err => console.log(err));
+      .then(
+        function(response) {
+          // do something with response
+          console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
+        },
+        function(err) {
+          // there was an error
+        }
+  );
   }
 
   render() {
@@ -88,6 +101,11 @@ class App extends Component {
               <FaceRecognition box ={this.state.box} imageURL={this.state.imageURL}/>
             </div>
       }
+      <Logo />
+      <Rank />
+      <ImageLinkForm onInputChange = {this.onInputChange} 
+                     onButtonSubmit={this.onButtonSubmit} /> 
+      <FaceRecognition imageURL={this.state.imageURL}/>
       </div>
     );
   }
