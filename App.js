@@ -43,17 +43,21 @@ class App extends Component {
    const width = Number(image.width);
    const height = Number(image.height);
    return{
-      //percentages
-      leftCol: clarifaiFace.left_col * width,
-      topRow: clarifaiFace.top_row * height,
-      rightCol: width - (clarifaiFace.right_col * width),
-      bottomRow: height - (clarifaiFace.bottom_row * height)
+    //percentages
+    leftCol: clarifaiFace.left_col * width,
+    topRow: clarifaiFace.top_row * height,
+    rightCol: width - (clarifaiFace.right_col * width),
+    bottomRow: height - (clarifaiFace.bottom_row * height)
    }
   }
 
   displayFaceBox = (box) =>{
     console.log(box);
     this.setState({box: box});
+  }
+
+      imageURL: ''
+    }
   }
 
   onInputChange = (event) => {
@@ -68,38 +72,40 @@ class App extends Component {
       , this.state.input)
       .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
       .catch(err => console.log(err));
-  }
-
-  onRouteChange = () => {
-    this.setState({route:'home'});
+      .then(
+        function(response) {
+          // do something with response
+          console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
+        },
+        function(err) {
+          // there was an error
+        }
+  );
   }
 
   render() {
     return (
       <div className="App">
       <Particles className='particles'
-        params={particlesOptions}
-        />
-
-        <Navigation />
+        params={particlesOptions}/>
+      <Navigation />
       
       { //conditional statement. If state is 'SignIn', then use SignIn component, else do everything else
-          this.state.route === 'signin' ?
-            <SignIn onRouteChange={this.onRouteChange}/>
-            : <div>
-                <Logo />
-                <Rank />
-                <ImageLinkForm  onInputChange = {this.onInputChange} 
-                              onButtonSubmit={this.onButtonSubmit} /> 
-                <FaceRecognition box ={this.state.box} imageURL={this.state.imageURL}/>
-              </div>
-        }
-        <Logo />
-        <Rank />
-        <ImageLinkForm onInputChange = {this.onInputChange} 
-                       onButtonSubmit={this.onButtonSubmit} /> 
-        <FaceRecognition imageURL={this.state.imageURL}/>
-    }
+        this.state.route === 'signin' ?
+          <SignIn />
+          : <div>
+              <Logo />
+              <Rank />
+              <ImageLinkForm  onInputChange = {this.onInputChange} 
+                            onButtonSubmit={this.onButtonSubmit} /> 
+              <FaceRecognition box ={this.state.box} imageURL={this.state.imageURL}/>
+            </div>
+      }
+      <Logo />
+      <Rank />
+      <ImageLinkForm onInputChange = {this.onInputChange} 
+                     onButtonSubmit={this.onButtonSubmit} /> 
+      <FaceRecognition imageURL={this.state.imageURL}/>
       </div>
     );
   }
